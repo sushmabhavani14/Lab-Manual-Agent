@@ -70,11 +70,21 @@ Experiment:
 {experiment}
 """
 
-            response = client.models.generate_content(
-                model="gemini-3.6-flash",
-                contents=prompt
-            )
+            import time
 
+for attempt in range(3):
+    try:
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt
+        )
+        break
+
+    except Exception as e:
+        if "503" in str(e) and attempt < 2:
+            time.sleep(5)
+        else:
+            raise e
         st.markdown(response.text)
 
     else:
